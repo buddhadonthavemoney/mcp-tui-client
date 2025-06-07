@@ -2,6 +2,8 @@
 
 A Terminal User Interface (TUI) for connecting to Model Context Protocol (MCP) servers with Google Gemini integration. This client enables Gemini to use tools from MCP servers through a clean chat interface.
 
+![2025-06-07-151802_hyprshot](https://github.com/user-attachments/assets/cb938481-a940-40fc-a45d-0d23fe4a6b23)
+
 ## What This Is
 
 This is an **MCP client** - it connects to existing MCP servers (made by others) and lets you chat with Gemini while giving it access to tools from those servers. Think of it as a bridge between Gemini and MCP servers.
