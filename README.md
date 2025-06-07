@@ -1,117 +1,162 @@
 # MCP Client TUI
 
-A beautiful Terminal User Interface (TUI) for Model Context Protocol with direct Gemini integration.
+A Terminal User Interface (TUI) for connecting to Model Context Protocol (MCP) servers with Google Gemini integration. This client enables Gemini to use tools from MCP servers through a clean chat interface.
 
-## Features
+## What This Is
 
-- 🤖 Direct communication with Google Gemini Pro
-- 🎨 Modern, responsive terminal interface
-- 💬 Real-time chat with markdown support
-- ⌨️ Keyboard shortcuts for efficient navigation
-- 🧹 Chat clearing and session management
-- 📱 Beautiful, professional UI design
+This is an **MCP client** - it connects to existing MCP servers (made by others) and lets you chat with Gemini while giving it access to tools from those servers. Think of it as a bridge between Gemini and MCP servers.
 
-## Prerequisites
+## Key Features
 
-- Python 3.8 or higher
-- Google Gemini API key (get one at [Google AI Studio](https://makersuite.google.com/app/apikey))
+- 🤖 **Gemini Chat Interface** with tool calling support
+- 🔧 **MCP Server Integration** - connects to any MCP server
+- 🔄 **Multi-step Tool Execution** - Gemini can chain tool calls automatically  
+- 💬 **Clean TUI** built with Textual framework
+- ⌨️ **Keyboard Shortcuts** for efficient navigation
+- 📊 **Server Monitoring** - view connected servers and available tools
 
-## Installation
+## How It Works
 
-1. Clone or download this project
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+1. You configure which MCP servers to connect to
+2. The client starts those servers and discovers their tools
+3. You chat with Gemini through the TUI
+4. Gemini can call tools from connected MCP servers
+5. Results are sent back to Gemini to continue the conversation
 
-3. Set up your Gemini API key:
-   ```bash
-   # Option 1: Create a .env file
-   echo "GEMINI_API_KEY=your_api_key_here" > .env
-   
-   # Option 2: Export as environment variable
-   export GEMINI_API_KEY=your_api_key_here
-   ```
+For example: Ask "list my files" → Gemini calls filesystem server tools → Gets results → Presents them to you
 
-## Usage
+## Quick Start
 
-Run the application:
+### 1. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Configure API Key
+```bash
+echo "GEMINI_API_KEY=your_api_key_here" > .env
+```
+
+### 3. Set Up MCP Servers (Optional)
+Run the setup script to configure some basic servers:
+```bash
+python setup_mcp_servers.py
+```
+
+Or manually edit `mcp_servers.json` to add your own servers.
+
+### 4. Run the Client
 ```bash
 python main.py
 ```
 
+## Configuration
+
+### MCP Servers
+Configure servers in `mcp_servers.json`:
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/directory"]
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    }
+  }
+}
+```
+
+### Environment Variables
+```bash
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=gemini-pro  # optional, defaults to gemini-pro
+```
+
+## Usage
+
 ### Keyboard Shortcuts
-
 - **Enter**: Send message
-- **Ctrl+C**: Clear chat history
-- **Ctrl+Q**: Quit application
+- **Ctrl+C**: Quit
+- **Ctrl+L**: Clear chat
+- **Ctrl+S**: Show server status  
+- **Ctrl+T**: Show available tools
 
-### Features
+### Example Usage
+```
+You: "read my config file"
+Gemini: [calls read_file tool → presents contents]
 
-- **Chat Interface**: Type your messages and get responses from Gemini
-- **Markdown Support**: Gemini responses are rendered with proper markdown formatting
-- **Session Management**: Clear chat to start fresh conversations
-- **Auto-scroll**: Chat automatically scrolls to show the latest messages
-- **Timestamped Messages**: All messages include timestamps
+You: "remember I like Python"  
+Gemini: [calls memory server → stores information]
+
+You: "what files are in my home directory?"
+Gemini: [calls list_directory → shows file listing]
+```
+
+## What MCP Servers Can You Connect To?
+
+This client works with any MCP server. Popular ones include:
+
+- **Filesystem servers** - file operations
+- **Memory servers** - persistent knowledge graphs  
+- **Database servers** - SQL operations
+- **Web servers** - fetch content, search
+- **Git servers** - repository operations
+- **API servers** - various external services
+
+Find servers at: https://github.com/modelcontextprotocol/servers
+
+## Technical Details
+
+- **JSON-RPC 2.0** communication with MCP servers
+- **Subprocess management** for server lifecycle
+- **Tool calling loop** that sends results back to Gemini
+- **Error handling** and connection recovery
 
 ## Project Structure
 
 ```
-mcp-client/
-├── main.py           # Main application file
-├── styles.css        # TUI styling
-├── requirements.txt  # Python dependencies
-└── README.md        # This file
+├── main.py              # Main TUI application  
+├── mcp_client.py        # MCP client implementation
+├── setup_mcp_servers.py # Helper to set up basic servers
+├── styles.css           # TUI styling
+├── requirements.txt     # Dependencies
+└── mcp_servers.json     # Server configuration
 ```
-
-## Configuration
-
-The application looks for the `GEMINI_API_KEY` environment variable. You can set this in several ways:
-
-1. **`.env` file** (recommended):
-   ```
-   GEMINI_API_KEY=your_actual_api_key_here
-   ```
-
-2. **Environment variable**:
-   ```bash
-   export GEMINI_API_KEY=your_actual_api_key_here
-   ```
-
-3. **System environment** (persistent):
-   Add to your shell profile (.bashrc, .zshrc, etc.)
 
 ## Troubleshooting
 
-### "GEMINI_API_KEY not found"
-- Make sure you've set the API key as described above
-- Verify the `.env` file is in the same directory as `main.py`
-- Check that there are no extra spaces or quotes around the API key
+**API Key Issues:**
+```bash
+echo $GEMINI_API_KEY  # Check if set
+cat .env              # Verify .env file
+```
 
-### Import errors
-- Make sure all dependencies are installed: `pip install -r requirements.txt`
-- Consider using a virtual environment
+**Server Issues:**
+```bash
+# Test if servers work independently
+npx -y @modelcontextprotocol/server-filesystem --help
 
-### API errors
-- Verify your API key is valid and active
-- Check your internet connection
-- Ensure you haven't exceeded API quotas
+# Check server status in app with Ctrl+S
+```
 
-## Future Enhancements
-
-This is the foundation for a full MCP client. Future versions will include:
-
-- 🔌 MCP server connections
-- 🛠️ Tool calling support  
-- 📁 Resource management
-- 🔄 Multiple conversation sessions
-- 💾 Chat history persistence
-- 🎛️ Configuration management
+**Connection Issues:**
+- Ensure internet access for Gemini API
+- Verify Node.js installed for npm-based servers
+- Check server logs for errors
 
 ## Contributing
 
-Feel free to submit issues and enhancement requests!
+This is an MCP client implementation. PRs welcome for:
+- Better error handling
+- UI improvements  
+- Additional client features
+- Documentation improvements
 
 ## License
 
-This project is open source and available under the MIT License. 
+MIT License - see LICENSE file.

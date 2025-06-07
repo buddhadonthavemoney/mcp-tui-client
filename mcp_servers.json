@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/home/buddha/"
+      ]
+    },
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
+    },
+    "hashnode": {
+       "command": "python3",
+       "args": [
+         "hashnode-mcp-server/mcp_server.py"
+       ],
+       "env": {
+         "HASHNODE_PERSONAL_ACCESS_TOKEN": "${HASHNODE_PERSONAL_ACCESS_TOKEN}"
+       }
+    }
+  }
+}
