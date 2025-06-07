@@ -53,7 +53,7 @@ python main.py
 ## Configuration
 
 ### MCP Servers
-Configure servers in `mcp_servers.json`:
+Configure servers in `mcp_servers.json`. The client supports environment variable substitution using `${VAR_NAME}` syntax for secure credential management:
 
 ```json
 {
@@ -65,16 +65,32 @@ Configure servers in `mcp_servers.json`:
     "memory": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "hashnode": {
+      "command": "python3",
+      "args": ["hashnode-mcp-server/mcp_server.py"],
+      "env": {
+        "HASHNODE_PERSONAL_ACCESS_TOKEN": "${HASHNODE_PERSONAL_ACCESS_TOKEN}"
+      }
     }
   }
 }
 ```
 
 ### Environment Variables
+Store sensitive credentials in your `.env` file:
 ```bash
+# Gemini API Key
 GEMINI_API_KEY=your_gemini_api_key
-GEMINI_MODEL=gemini-pro  # optional, defaults to gemini-pro
+
+# Optional Gemini Model
+GEMINI_MODEL=gemini-pro
+
+# MCP Server Credentials
+HASHNODE_PERSONAL_ACCESS_TOKEN=your_hashnode_token_here
 ```
+
+**Security Note**: Environment variables are resolved using `${VAR_NAME}` syntax. Missing variables will cause clear error messages during server startup.
 
 ## Usage
 
@@ -101,14 +117,54 @@ Gemini: [calls list_directory → shows file listing]
 
 This client works with any MCP server. Popular ones include:
 
-- **Filesystem servers** - file operations
-- **Memory servers** - persistent knowledge graphs  
-- **Database servers** - SQL operations
-- **Web servers** - fetch content, search
-- **Git servers** - repository operations
-- **API servers** - various external services
+### Built-in Servers (via npm):
+- **@modelcontextprotocol/server-filesystem** - file operations, directory listing
+- **@modelcontextprotocol/server-memory** - persistent knowledge graphs  
+- **@modelcontextprotocol/server-fetch** - web content fetching
+- **@modelcontextprotocol/server-github** - GitHub repository operations
+- **@modelcontextprotocol/server-slack** - Slack integration
+- **@modelcontextprotocol/server-postgres** - PostgreSQL database operations
 
-Find servers at: https://github.com/modelcontextprotocol/servers
+### Community Servers:
+- **Hashnode MCP Server** - Blog publishing and content management
+- **Custom Python/Node.js servers** - Build your own tools
+
+### Example Configurations:
+
+**Hashnode Server:**
+```json
+"hashnode": {
+  "command": "python3",
+  "args": ["hashnode-mcp-server/mcp_server.py"],
+  "env": {
+    "HASHNODE_PERSONAL_ACCESS_TOKEN": "${HASHNODE_PERSONAL_ACCESS_TOKEN}"
+  }
+}
+```
+
+**GitHub Server:**
+```json
+"github": {
+  "command": "npx",
+  "args": ["-y", "@modelcontextprotocol/server-github"],
+  "env": {
+    "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_ACCESS_TOKEN}"
+  }
+}
+```
+
+**PostgreSQL Server:**
+```json
+"postgres": {
+  "command": "npx", 
+  "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://user:pass@localhost/db"],
+  "env": {
+    "POSTGRES_CONNECTION_STRING": "${DATABASE_URL}"
+  }
+}
+```
+
+Find more servers at: https://github.com/modelcontextprotocol/servers
 
 ## Technical Details
 
