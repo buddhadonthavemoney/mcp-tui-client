@@ -1,0 +1,77 @@
+/* MCP Client TUI Styles */
+
+Screen {
+    background: $background;
+}
+
+#main-container {
+    height: 100%;
+    background: $surface;
+}
+
+#title {
+    text-align: center;
+    background: $primary;
+    color: $text;
+    padding: 1;
+    margin-bottom: 1;
+    text-style: bold;
+}
+
+#chat-area {
+    height: 1fr;
+    margin: 1;
+}
+
+#chat-log {
+    height: 1fr;
+    border: solid $primary;
+    background: $surface;
+    padding: 1;
+    scrollbar-background: $surface;
+    scrollbar-color: $primary;
+}
+
+#input-area {
+    height: 3;
+    margin: 0 1 1 1;
+    align: center middle;
+}
+
+#message-input {
+    width: 1fr;
+    margin-right: 1;
+}
+
+#send-button {
+    min-width: 8;
+}
+
+Input {
+    border: solid $accent;
+}
+
+Input:focus {
+    border: solid $primary;
+}
+
+Button {
+    min-width: 8;
+}
+
+Button.-primary {
+    background: $primary;
+    color: $text;
+}
+
+Button.-primary:hover {
+    background: $primary-lighten-1;
+}
+
+RichLog {
+    border: solid $accent;
+}
+
+Static {
+    text-align: center;
+} 
